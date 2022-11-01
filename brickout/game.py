@@ -1,6 +1,6 @@
 import pygame
 
-from states import Splash
+from states import Splash, GamePlay
 
 from .constants import *
 
@@ -22,7 +22,8 @@ class Brickout(object):
 
         # Game states
         self.states = {
-            "SPLASH": Splash()
+            "SPLASH": Splash(),
+            "GAMEPLAY": GamePlay()
         }
 
         # Game start
@@ -32,6 +33,14 @@ class Brickout(object):
         self.state = self.states[self.state_name]
 
     # TODO: def _flip_state to advance through screens
+    def _flip_state(self):
+        current_state = self.state_name
+        next_state = self.state.next_state
+        self.state.done = False
+        self.state_name = next_state
+        persistent = self.state.persist
+        self.state = self.states[self.state_name]
+        self.state.startup(persistent)
     
     def _event_loop(self):
         for event in pygame.event.get():
@@ -45,6 +54,8 @@ class Brickout(object):
             self.done = True
         
         # TODO: elif to change state
+        elif self.state.done:
+            self._flip_state()
 
         self.state.update(dt)
 
