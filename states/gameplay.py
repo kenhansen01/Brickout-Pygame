@@ -2,6 +2,7 @@ import pygame
 from brickout.constants import *
 
 # Import game elements
+from elements import Player
 
 # Import base state
 from .base import BaseState
@@ -28,20 +29,20 @@ class GamePlay(BaseState):
         self.block_group = pygame.sprite.Group() # this will be replace by level_setup once that is built
 
         # Instantiate Player, Ball Classes
-        self.player = None
+        self.player = Player(self.all_sprites, self.collide_sprites)
         self.ball = None
 
         # Sprites setup - add player
-        # self.all_sprites.add(self.player, self.block_group)
+        self.all_sprites.add(self.player) # , self.block_group
         # self.collide_sprites.add(self.block_group)
 
         # Text setup
         self.ui_font = pygame.font.Font(None, 40)
-        self.score = 0 # replace with self.player.score
+        self.score = self.player.score
         self.score_text = self.ui_font.render(f"Score: {self.score}", True, pygame.Color("White"))
         self.score_rect = self.score_text.get_rect(center=(70, 25))
 
-        self.lives = 3 # replace with self.player.lives
+        self.lives = self.player.lives
         self.lives_text = self.ui_font.render(f"Lives: {self.lives}", True, pygame.Color("White"))
         self.lives_rect = self.lives_text.get_rect(center=(1210, 25))
 
@@ -66,17 +67,18 @@ class GamePlay(BaseState):
             self.reset = persistent["reset"]
 
         # Reset player position
-
+        self.player.rect.center = (self.player.x, self.player.y)
+        
         # Reset ball status/position
 
         if self.status == "lost" or self.reset:
             # Resetting player score
             self.score = 0
-            # set player score to 0
+            self.player.score = 0
 
             # Resetting player lives
             self.lives = 3
-            # set player lives to 3
+            self.player.lives = 3
 
             self.level = 1
         
@@ -87,7 +89,7 @@ class GamePlay(BaseState):
             self.block_group.empty()
             # self.block_group set by level_setup once that is built
 
-            # self.all_sprites.add(self.player, self.block_group)
+            self.all_sprites.add(self.player) #, self.block_group
             # self.collide_sprites.add(self.block_group)
 
     def draw(self, window):
@@ -99,7 +101,7 @@ class GamePlay(BaseState):
 
         # Drawing the game objects
 
-        # self.all_sprites.draw(self.main_surface)
+        self.all_sprites.draw(self.main_surface)
         # self.ball.draw(self.main_surface)
 
         # Drawing the ui text
@@ -115,25 +117,25 @@ class GamePlay(BaseState):
             self.main_rect.topleft = (0, 0)
 
             # Updating the lives text
-            self.lives = self.lives # self.player.lives
+            self.lives = self.player.lives
             self.lives_text = self.ui_font.render(f"Lives: {self.lives}", True, pygame.Color("White"))
 
             # Updating the score text
-            self.score = self.score # self.player.score
+            self.score = self.player.score
             self.persist["score"] = self.score
             self.score_text = self.ui_font.render(f"Score: {self.score}", True, pygame.Color("White"))
 
             # Updating the game objects
             
-            # self.all_sprites.update()
+            self.all_sprites.update()
             # self.ball.update()
 
-            # if self.player.lives == 0:
-            #     self.status = "loser"
-            #     self.persist["status"] = self.status
-            #     self.level = 1
-            #     self.persist["level"] = self.level
-            #     self.done = True
+            if self.player.lives == 0:
+                 self.status = "loser"
+                 self.persist["status"] = self.status
+                 self.level = 1
+                 self.persist["level"] = self.level
+                 self.done = True
 
             # if not self.block_group:
             #     self.status = "winner"
