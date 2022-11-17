@@ -2,7 +2,7 @@ import pygame
 from brickout.constants import *
 
 # Import game elements
-from elements import Player
+from elements import Player, Ball
 
 # Import base state
 from .base import BaseState
@@ -30,7 +30,7 @@ class GamePlay(BaseState):
 
         # Instantiate Player, Ball Classes
         self.player = Player(self.all_sprites, self.collide_sprites)
-        self.ball = None
+        self.ball = Ball(self.all_sprites, self.collide_sprites, self.player, self.main_rect)
 
         # Sprites setup - add player
         self.all_sprites.add(self.player) # , self.block_group
@@ -70,6 +70,7 @@ class GamePlay(BaseState):
         self.player.rect.center = (self.player.x, self.player.y)
         
         # Reset ball status/position
+        self.ball.active = False
 
         if self.status == "lost" or self.reset:
             # Resetting player score
@@ -102,7 +103,7 @@ class GamePlay(BaseState):
         # Drawing the game objects
 
         self.all_sprites.draw(self.main_surface)
-        # self.ball.draw(self.main_surface)
+        self.ball.draw(self.main_surface)
 
         # Drawing the ui text
         window.blit(self.score_text, self.score_rect)
@@ -128,7 +129,7 @@ class GamePlay(BaseState):
             # Updating the game objects
             
             self.all_sprites.update()
-            # self.ball.update()
+            self.ball.update()
 
             if self.player.lives == 0:
                  self.status = "loser"

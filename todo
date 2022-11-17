@@ -3,9 +3,6 @@
 
 # TODO
 
-2) Create the player pad
-
-3) Create the ball
 
 4) Create a collision system
 
@@ -25,9 +22,8 @@
 
 
 # In Progress
-
-1) Create a window
-
+3) Create the ball
 
 # Complete
-
+1) Create a window
+2) Create the player pad

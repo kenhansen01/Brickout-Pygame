@@ -10,6 +10,9 @@ TITLE = "Brickout"
 P_WIDTH = 120
 P_HEIGHT = 27
 
+# Ball settings
+B_RADIUS = 12
+
 # Block settings
 
 # Sound effects
