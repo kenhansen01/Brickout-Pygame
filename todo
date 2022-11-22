@@ -4,8 +4,6 @@
 # TODO
 
 
-4) Create a collision system
-
 5) Create the blocks
 
 6) Create a game over system
@@ -22,8 +20,10 @@
 
 
 # In Progress
-3) Create the ball
+
+4) Create a collision system
 
 # Complete
 1) Create a window
 2) Create the player pad
+3) Create the ball

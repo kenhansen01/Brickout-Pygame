@@ -15,6 +15,8 @@ B_RADIUS = 12
 
 # Block settings
 
+TOP_OFFSET = 54
+
 # Sound effects
 
 # Final level

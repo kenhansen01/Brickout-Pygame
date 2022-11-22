@@ -33,13 +33,13 @@ class Ball(BaseObject):
 
         if self.active:
             self.rect.x += self.speed_x
-            # self.collision("horizontal")
-            # self.collision_window("horizontal")
+            self.collision("horizontal")
+            self.collision_window("horizontal")
             self.rect.x = round(self.rect.x)
 
             self.rect.y += self.speed_y
-            # self.collision("vertical")
-            # self.collision_window("vertical")
+            self.collision("vertical")
+            self.collision_window("vertical")
             self.rect.y = round(self.rect.y)
 
         if not self.active:
@@ -76,3 +76,73 @@ class Ball(BaseObject):
 
     def draw(self, window):
         pygame.draw.circle(window, (self.color.r, self.color.g, self.color.b), (self.rect.center), B_RADIUS)
+
+
+    def collision(self, direction):
+        collision_sprites = pygame.sprite.spritecollide(self, self.obstacles, False)
+
+        if self.rect.colliderect(self.player.rect):
+            collision_sprites.append(self.player)
+
+        if collision_sprites:
+            if direction == "horizontal":
+                for sprite in collision_sprites:
+                    if getattr(sprite, 'health', None):
+                        #self.block_collision_sound.play()
+                        self.screen.timer = 15
+                        # damage_block(sprite)
+                        self.player.score += 1
+
+                    # Collision on the right
+                    if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
+                        self.rect.right = sprite.rect.left - 1
+                        self.rect.x = self.rect.x
+                        self.speed_x *= -1
+
+                    # Collision on the left
+                    if self.rect.left <= sprite.rect.right and self.old_rect.left >= sprite.old_rect.right:
+                        self.rect.left = sprite.rect.right + 1
+                        self.rect.x = self.rect.x
+                        self.speed_x *= -1
+
+
+            if direction == "vertical":
+                for sprite in collision_sprites:
+                    if getattr(sprite, 'health', None):
+                        # self.block_collision_sound.play()
+                        self.screen.timer = 15
+                        # damage_block(sprite)
+                        self.player.score += 1
+
+                    # Collision on the bottom
+                    if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
+                        self.rect.bottom = sprite.rect.top - 1
+                        self.rect.y = self.rect.y
+                        self.speed_y *= -1
+
+                    # Collision on the top
+                    if self.rect.top <= sprite.rect.bottom and self.old_rect.top >= sprite.old_rect.bottom:
+                        self.rect.top = sprite.rect.bottom + 1
+                        self.rect.y = self.rect.y
+                        self.speed_y *= -1
+
+    def collision_window(self, direction):
+        if direction == "horizontal":
+            if self.rect.left < 0:
+                self.rect.left = 0
+                self.rect.x = self.rect.x
+                self.speed_x *= -1
+
+            if self.rect.right > WIDTH:
+                self.rect.right = WIDTH
+                self.rect.x = self.rect.x
+                self.speed_x *= -1
+
+        if direction == "vertical":
+            if self.rect.top <= TOP_OFFSET:
+                self.rect.top = TOP_OFFSET
+                self.rect.y = self.rect.y
+                self.speed_y *= -1
+
+            if self.rect.top > HEIGHT:
+                self.reset_ball()
