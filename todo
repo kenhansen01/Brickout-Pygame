@@ -3,9 +3,6 @@
 
 # TODO
 
-
-5) Create the blocks
-
 6) Create a game over system
 
 ------------ GAME WORKS ABOVE THIS LINE ------------------------
@@ -16,14 +13,14 @@
 
 9) Add particles
 
-10) Make a system that allows for different levels
-
 
 # In Progress
 
-4) Create a collision system
+5) Create the bricks
+10) Make a system that allows for different levels
 
 # Complete
 1) Create a window
 2) Create the player pad
 3) Create the ball
+4) Create a collision system

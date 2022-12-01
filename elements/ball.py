@@ -4,8 +4,8 @@ from math import sqrt
 from brickout.constants import *
 from .base import BaseObject
 
-# Import blocks and other elements
-
+# Import bricks and other elements
+from .brick import damage_brick
 
 class Ball(BaseObject):
     def __init__(self, groups, obstacles, player, surf_rect):
@@ -88,9 +88,9 @@ class Ball(BaseObject):
             if direction == "horizontal":
                 for sprite in collision_sprites:
                     if getattr(sprite, 'health', None):
-                        #self.block_collision_sound.play()
-                        self.screen.timer = 15
-                        # damage_block(sprite)
+                        #self.brick_collision_sound.play()
+                        # self.screen.timer = 15
+                        damage_brick(sprite)
                         self.player.score += 1
 
                     # Collision on the right
@@ -109,9 +109,9 @@ class Ball(BaseObject):
             if direction == "vertical":
                 for sprite in collision_sprites:
                     if getattr(sprite, 'health', None):
-                        # self.block_collision_sound.play()
-                        self.screen.timer = 15
-                        # damage_block(sprite)
+                        # self.brick_collision_sound.play()
+                        # self.screen.timer = 15
+                        damage_brick(sprite)
                         self.player.score += 1
 
                     # Collision on the bottom

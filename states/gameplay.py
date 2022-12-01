@@ -3,6 +3,7 @@ from brickout.constants import *
 
 # Import game elements
 from elements import Player, Ball
+from levels import level_setup
 
 # Import base state
 from .base import BaseState
@@ -26,15 +27,15 @@ class GamePlay(BaseState):
         # Sprite groups
         self.all_sprites = pygame.sprite.Group()
         self.collide_sprites = pygame.sprite.Group()
-        self.block_group = pygame.sprite.Group() # this will be replace by level_setup once that is built
+        self.block_group = level_setup(self.all_sprites, self.collide_sprites)
 
         # Instantiate Player, Ball Classes
         self.player = Player(self.all_sprites, self.collide_sprites)
         self.ball = Ball(self.all_sprites, self.collide_sprites, self.player, self.main_rect)
 
         # Sprites setup - add player
-        self.all_sprites.add(self.player) # , self.block_group
-        # self.collide_sprites.add(self.block_group)
+        self.all_sprites.add(self.player, self.block_group)
+        self.collide_sprites.add(self.block_group)
 
         # Text setup
         self.ui_font = pygame.font.Font(None, 40)
@@ -83,15 +84,14 @@ class GamePlay(BaseState):
 
             self.level = 1
         
-        # Reseting the level
+        # Resetting the level
         if not self.block_group or self.status == "loser":
             self.all_sprites.empty()
             self.collide_sprites.empty()
-            self.block_group.empty()
-            # self.block_group set by level_setup once that is built
+            self.block_group = level_setup(self.all_sprites, self.collide_sprites, self.level)
 
-            self.all_sprites.add(self.player) #, self.block_group
-            # self.collide_sprites.add(self.block_group)
+            self.all_sprites.add(self.player, self.block_group)
+            self.collide_sprites.add(self.block_group)
 
     def draw(self, window):
         window.fill(pygame.Color("black"))
@@ -138,17 +138,19 @@ class GamePlay(BaseState):
                  self.persist["level"] = self.level
                  self.done = True
 
-            # if not self.block_group:
-            #     self.status = "winner"
-            #     self.persist["status"] = self.status
-            #     self.persist["level"] = self.level
+            if not self.block_group:
+                self.status = "winner"
+                self.persist["status"] = self.status
+                self.persist["level"] = self.level
 
-            #     self.level += 1
+                self.level += 1
 
-            #     if self.level <= c.FINAL_LEVEL:
-            #         self.next_state = "GAMEOVER"
-            #         self.done = True
+                if self.level <= FINAL_LEVEL:
+                    self.next_state = "GAMEPLAY" # "GAMEOVER"
+                    self.persist["reset"] = False
+                    self.done = True
 
-            #     elif self.level > c.FINAL_LEVEL:
-            #         self.next_state = "CREDITS"
-            #         self.done = True
+                elif self.level > FINAL_LEVEL:
+                    self.next_state = "SPLASH" # "CREDITS"
+                    self.persist["reset"] = True
+                    self.done = True
