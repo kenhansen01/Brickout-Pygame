@@ -6,11 +6,14 @@ from .base import BaseObject
 
 # Import bricks and other elements
 from .brick import damage_brick
+from sfx import SoundEffect, ScreenShake
 
 class Ball(BaseObject):
     def __init__(self, groups, obstacles, player, surf_rect):
         super(Ball, self).__init__()
-        
+        self.brick_collision_sound = SoundEffect(IMPACT_1)
+        self.player_collision_sound = SoundEffect(IMPACT_2)
+        self.shoot_sound = SoundEffect(SHOOT_BALL_SOUND)
         self.surf_rect = surf_rect
         self.color = pygame.Color("lightblue")
         self.ball_sq_l = int(B_RADIUS * sqrt(2))
@@ -24,6 +27,7 @@ class Ball(BaseObject):
         self.groups = groups
         self.obstacles = obstacles
         self.player = player
+        self.screen = ScreenShake()
 
     def update(self):
         # Previous frame
@@ -56,6 +60,7 @@ class Ball(BaseObject):
 
             # Shooting the ball
             if self.player.keystate[pygame.K_SPACE]:
+                self.shoot_sound.play()
 
                 if self.aim == "left":
                     self.speed_x = -self.speed
@@ -66,6 +71,8 @@ class Ball(BaseObject):
                     self.speed_y = -self.speed
 
                 self.active = True
+
+        self.screen.shake(self.surf_rect)
 
     def reset_ball(self):
         if self.player.lives > 0:
@@ -82,14 +89,15 @@ class Ball(BaseObject):
         collision_sprites = pygame.sprite.spritecollide(self, self.obstacles, False)
 
         if self.rect.colliderect(self.player.rect):
+            self.player_collision_sound.play()
             collision_sprites.append(self.player)
 
         if collision_sprites:
             if direction == "horizontal":
                 for sprite in collision_sprites:
                     if getattr(sprite, 'health', None):
-                        #self.brick_collision_sound.play()
-                        # self.screen.timer = 15
+                        self.brick_collision_sound.play()
+                        self.screen.timer = 15
                         damage_brick(sprite)
                         self.player.score += 1
 
@@ -109,8 +117,8 @@ class Ball(BaseObject):
             if direction == "vertical":
                 for sprite in collision_sprites:
                     if getattr(sprite, 'health', None):
-                        # self.brick_collision_sound.play()
-                        # self.screen.timer = 15
+                        self.brick_collision_sound.play()
+                        self.screen.timer = 15
                         damage_brick(sprite)
                         self.player.score += 1
 

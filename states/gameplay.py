@@ -4,6 +4,7 @@ from brickout.constants import *
 # Import game elements
 from elements import Player, Ball
 from levels import level_setup
+from sfx import StarField
 
 # Import base state
 from .base import BaseState
@@ -32,6 +33,7 @@ class GamePlay(BaseState):
         # Instantiate Player, Ball Classes
         self.player = Player(self.all_sprites, self.collide_sprites)
         self.ball = Ball(self.all_sprites, self.collide_sprites, self.player, self.main_rect)
+        self.star_field = StarField()
 
         # Sprites setup - add player
         self.all_sprites.add(self.player, self.block_group)
@@ -89,7 +91,7 @@ class GamePlay(BaseState):
             self.all_sprites.empty()
             self.collide_sprites.empty()
             self.block_group = level_setup(self.all_sprites, self.collide_sprites, self.level)
-
+            self.star_field.stars.clear()
             self.all_sprites.add(self.player, self.block_group)
             self.collide_sprites.add(self.block_group)
 
@@ -101,7 +103,7 @@ class GamePlay(BaseState):
         self.main_surface.fill(pygame.Color("black"))
 
         # Drawing the game objects
-
+        self.star_field.draw(self.main_surface)
         self.all_sprites.draw(self.main_surface)
         self.ball.draw(self.main_surface)
 
@@ -127,7 +129,7 @@ class GamePlay(BaseState):
             self.score_text = self.ui_font.render(f"Score: {self.score}", True, pygame.Color("White"))
 
             # Updating the game objects
-            
+            self.star_field.update()
             self.all_sprites.update()
             self.ball.update()
 
