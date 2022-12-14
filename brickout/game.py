@@ -1,6 +1,6 @@
 import pygame
 
-from states import Splash, GamePlay
+from states import Splash, Menu, GamePlay, GameOver, Credits
 
 from .constants import *
 
@@ -23,7 +23,10 @@ class Brickout(object):
         # Game states
         self.states = {
             "SPLASH": Splash(),
-            "GAMEPLAY": GamePlay()
+            "MENU": Menu(),
+            "GAMEPLAY": GamePlay(),
+            "GAMEOVER": GameOver(),
+            "CREDITS": Credits()
         }
 
         # Game start

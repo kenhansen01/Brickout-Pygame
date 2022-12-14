@@ -13,7 +13,7 @@ class GamePlay(BaseState):
     def __init__(self):
         super(GamePlay, self).__init__()
         self.level = 1
-        self.next_state = "SPLASH" # Menu or Gameover
+        self.next_state = "GAMEOVER" # Menu or Gameover
         self.reset = False
 
         # Determine if player lost or won
@@ -119,6 +119,11 @@ class GamePlay(BaseState):
             # Reseting main_surface to default position (required for screenshake)
             self.main_rect.topleft = (0, 0)
 
+            # Updating the game objects
+            self.star_field.update()
+            self.all_sprites.update()
+            self.ball.update()
+
             # Updating the lives text
             self.lives = self.player.lives
             self.lives_text = self.ui_font.render(f"Lives: {self.lives}", True, pygame.Color("White"))
@@ -127,11 +132,6 @@ class GamePlay(BaseState):
             self.score = self.player.score
             self.persist["score"] = self.score
             self.score_text = self.ui_font.render(f"Score: {self.score}", True, pygame.Color("White"))
-
-            # Updating the game objects
-            self.star_field.update()
-            self.all_sprites.update()
-            self.ball.update()
 
             if self.player.lives == 0:
                  self.status = "loser"
@@ -148,11 +148,11 @@ class GamePlay(BaseState):
                 self.level += 1
 
                 if self.level <= FINAL_LEVEL:
-                    self.next_state = "GAMEPLAY" # "GAMEOVER"
+                    self.next_state = "GAMEOVER" # "GAMEOVER"
                     self.persist["reset"] = False
                     self.done = True
 
                 elif self.level > FINAL_LEVEL:
-                    self.next_state = "SPLASH" # "CREDITS"
+                    self.next_state = "CREDITS" # "CREDITS"
                     self.persist["reset"] = True
                     self.done = True

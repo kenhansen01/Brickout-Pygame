@@ -7,7 +7,7 @@ class Splash(BaseState):
         self.title_font = pygame.font.Font(None, 40)
         self.title = self.title_font.render("Pygame Brickout", True, pygame.Color("white"))
         self.title_rect = self.title.get_rect(center=self.window_rect.center)
-        self.next_state = "GAMEPLAY" # MENU or GAMEPLAY state here
+        self.next_state = "MENU" # MENU or GAMEPLAY state here
         self.time_active = 0
 
     def get_event(self, event):

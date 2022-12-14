@@ -96,10 +96,10 @@ class Ball(BaseObject):
             if direction == "horizontal":
                 for sprite in collision_sprites:
                     if getattr(sprite, 'health', None):
+                        self.player.score += 1
                         self.brick_collision_sound.play()
                         self.screen.timer = 15
                         damage_brick(sprite)
-                        self.player.score += 1
 
                     # Collision on the right
                     if self.rect.right >= sprite.rect.left and self.old_rect.right <= sprite.old_rect.left:
@@ -117,10 +117,10 @@ class Ball(BaseObject):
             if direction == "vertical":
                 for sprite in collision_sprites:
                     if getattr(sprite, 'health', None):
+                        self.player.score += 1
                         self.brick_collision_sound.play()
                         self.screen.timer = 15
                         damage_brick(sprite)
-                        self.player.score += 1
 
                     # Collision on the bottom
                     if self.rect.bottom >= sprite.rect.top and self.old_rect.bottom <= sprite.old_rect.top:
